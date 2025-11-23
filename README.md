@@ -1,106 +1,311 @@
-# **Numpy for Data Science**
+# Numpy for Data Science: Credit Card Fraud Detection
 
-<details>
-<summary><strong>Outline</strong></summary>
+[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
+[![NumPy](https://img.shields.io/badge/NumPy-1.21+-blue.svg)](https://numpy.org/)
+[![License](https://img.shields.io/badge/License-ODbL_1.0-green.svg)](LICENSE)
+[![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-orange.svg)](https://jupyter.org/)
 
-- [**1.Introduction**](#1-introduction)
-    - [1.1.Prolem Statement](#11-prolem-statement)
-    - [1.2.Motivation and Real-world Applications](#12-motivation-and-real-world-applications)
-    - [1.3.Spectific Obiectives](#13-specific-objectives)
-- [**2.Dataset**](#2-dataset) 
-    - [2.1.Data Source](#21-data-source)
-    - [2.2.Feature Description](#22-feature-decsciption)
-    - [2.3.Data Size and Characteristics](#23-data-size-and-characteristics)
-- [**3.Method**](#3-method)
-    - [3.1.Data Processing Pipeline](#31-data-processing-pipeline)
-    - [3.2.Algorithm Used](#32-algorithm-used)
-- [**4.Installation & Setup**](#4-installation--setup)
-- [**5.Usage**](#5-usage)
-- [**6.Result**](#6-result)
-- [**7.Project structure**](#7-project-structure)
-- [**8.Challenges & Solutions**](#8-challenges--solutions)
-- [**9.Future Improvements**](#9-future-improvements)
-- [**10.Contributors**](#10-contributors)
-- [**11.Author Information**](#11-author-information)
-- [**12.Contact**](#12-contact)
-- [**13.License**](#13-license)
+A comprehensive machine learning project implementing **credit card fraud detection** using pure NumPy. This educational project demonstrates the complete ML pipeline: data preprocessing, model training (Logistic Regression, Neural Networks, KNN), evaluation, and advanced visualization – all built from scratch without relying on high-level ML libraries.
 
-</details>
+## Table of Contents
 
+- [Introduction](#introduction)
+  - [Problem Statement](#problem-statement)
+  - [Motivation and Real-world Applications](#motivation-and-real-world-applications)
+  - [Specific Objectives](#specific-objectives)
+- [Dataset](#dataset)
+  - [Data Source](#data-source)
+  - [Feature Description](#feature-description)
+  - [Data Size and Characteristics](#data-size-and-characteristics)
+- [Method](#method)
+  - [Data Processing Pipeline](#data-processing-pipeline)
+  - [Algorithms Used](#algorithms-used)
+- [Installation & Setup](#installation--setup)
+- [Usage](#usage)
+- [Results](#results)
+- [Project Structure](#project-structure)
+- [Challenges & Solutions](#challenges--solutions)
+- [Future Improvements](#future-improvements)
+- [Contributing](#contributing)
+- [Authors](#authors)
+- [Contact](#contact)
+- [License](#license)
 
-## 1. Introduction
+## Introduction
 
-### 1.1. Prolem Statement
+### Problem Statement
 
-### 1.2. Motivation and Real-world Applications
+Credit card fraud detection is a critical **binary classification problem** with severe class imbalance. The goal is to identify fraudulent transactions while minimizing false positives that could inconvenience legitimate users. This project addresses the challenge of building effective fraud detection models using only NumPy, focusing on educational value and deep understanding of ML algorithms.
 
-### 1.3. Specific Objectives
+### Motivation and Real-world Applications
 
-## 2. Dataset 
+- **Financial Security**: Fraudulent transactions cost billions annually; effective detection protects consumers and institutions.
+- **Real-time Processing**: Models must process transactions quickly with minimal computational resources.
+- **Educational Value**: Implementing ML algorithms from scratch provides deep insights into optimization, regularization, and numerical stability.
+- **Scalability**: Pure NumPy implementations can be optimized for production environments without external dependencies.
 
-### 2.1. Data Source 
+### Specific Objectives
 
-### 2.2. Feature Decsciption
+- Implement a complete ML pipeline using **pure NumPy** for educational purposes.
+- Develop robust preprocessing techniques for handling missing values, outliers, and class imbalance.
+- Build and compare multiple models: Logistic Regression, Neural Networks, and KNN.
+- Create comprehensive visualization tools for model analysis and interpretation.
+- Demonstrate best practices in code organization, documentation, and reproducibility.
 
-### 2.3. Data Size and Characteristics
+## Dataset
 
-## 3. Method 
+### Data Source
 
-### 3.1. Data Processing Pipeline
+The dataset used is the [Credit Card Fraud Detection dataset](https://www.kaggle.com/mlg-ulb/creditcardfraud) from Kaggle, provided by ULB (Université Libre de Bruxelles). This dataset contains transactions made by credit cards in September 2013 by European cardholders.
 
-### 3.2. Algorithm Used 
+**Important**: Ensure you have proper authorization to use this dataset for research/educational purposes.
 
-### 3.3. Logistic Regression
+### Feature Description
 
-## 4. Installation & Setup
+- **V1-V28**: Principal components obtained via PCA transformation (anonymized features).
+- **Time**: Seconds elapsed between each transaction and the first transaction in the dataset.
+- **Amount**: Transaction amount (this feature can be used for cost-sensitive learning).
+- **Class**: Target variable (0 = legitimate, 1 = fraudulent).
 
-### 4.1. Prerequisites 
+### Data Size and Characteristics
 
-### 4.2. Installation Steps 
+- **284,807 transactions** over 2 days.
+- **492 fraudulent transactions** (0.172% of total).
+- Highly imbalanced dataset requiring specialized handling techniques.
+- Features are scaled and anonymized for privacy.
 
-## 5. Usage
+## Method
 
-### 5.1 Runing the Complete Pipeline
+### Data Processing Pipeline
 
-### 5.2. Traning Invidual Models
+Implemented in `src/data_processing.py` with two main classes:
 
-### 5.3. Generating Visualizations
+#### NumpyDataProcessor
+- **Data Loading**: Robust CSV loading with error handling and memory optimization.
+- **Statistical Analysis**: Comprehensive statistics (mean, std, median, IQR, skewness, kurtosis, missing values, outliers).
+- **Feature Analysis**: Distribution classification, correlation analysis, and statistical significance testing (Welch's t-test).
+- **Utility Functions**: Correlation matrices, class imbalance analysis, and data validation.
 
-### 5.4. Example Code Snippet
+#### AdvancedPreprocessor
+- **Missing Value Handling**: KNN imputation, mean/median imputation based on data characteristics.
+- **Outlier Detection**: IQR, Z-score, and modified Z-score methods with robust capping/winsorization.
+- **Feature Scaling**: Standard, Min-Max, Robust, and Power transformations.
+- **Class Imbalance**: SMOTE oversampling and random undersampling implementations.
+- **Feature Engineering**: Polynomial features, interaction terms, and automated feature selection.
+- **Feature Selection**: Variance thresholding, correlation-based removal, and mutual information approximation.
 
-## 6. Result 
+### Algorithms Used
 
-### 6.1 Performance Metrics 
+All models implemented from scratch in `src/models.py`:
 
-### 6.2 Visualization
+#### Logistic Regression
+- Mini-batch gradient descent with multiple optimizers (SGD, Momentum, Adam, RMSProp).
+- L2 regularization and class weighting for imbalanced data.
+- Early stopping and learning rate scheduling.
 
-### 6.3. Analysis
+#### Neural Network (MLP)
+- Multi-layer perceptron with configurable hidden layers.
+- Multiple activation functions (ReLU, Sigmoid, Tanh, Leaky ReLU).
+- Batch normalization and dropout support.
+- Advanced optimization with Adam and gradient clipping.
 
-## 7. Project Structure
+#### K-Nearest Neighbors
+- Multiple distance metrics (Euclidean, Manhattan, Cosine, Minkowski).
+- Batch processing for memory efficiency with large datasets.
+- Weighted voting and probability estimation.
 
-## 8. Challenges & Solutions
+#### Evaluation Framework
+- Comprehensive metrics: accuracy, precision, recall, F1-score, confusion matrix.
+- Cross-validation utilities and statistical significance testing.
+- ROC and Precision-Recall curve analysis.
 
-## 9. Future Improvements
+## Installation & Setup
 
-## 10. Contributors
+### Prerequisites
 
-## 11. Author Information
+- Python 3.9 or higher
+- pip package manager
 
-- Full name: Lăng Phú Quý 
+### Installation Steps
 
-## 12. Contact
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/b28dbca4/Numpy-for-Data-Science.git
+   cd Numpy-for-Data-Science
+   ```
 
-For questions and suggestions:
+2. **Create a virtual environment** (recommended):
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
 
-Email: phuquy.lang@gmail.com
+3. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-Issues: GitHub Issues
+4. **Download the dataset**:
+   - Place `creditcard.csv` in the `data/raw/` directory.
+   - Ensure the file follows the expected format.
 
-# 13. License
+## Usage
 
+### Running the Complete Pipeline
 
-<div align='center'>
+Execute the Jupyter notebooks in order:
 
-    ⭐ Don't forget to start this repository if you find it helpfull! ⭐ 
+1. **Data Exploration** (`notebooks/01_data_exploration.ipynb`):
+   - Load and analyze raw data
+   - Generate statistical summaries and visualizations
+   - Identify data quality issues and preprocessing needs
 
-<div>
+2. **Preprocessing** (`notebooks/02_preprocessing.ipynb`):
+   - Configure and apply advanced preprocessing pipeline
+   - Handle missing values, outliers, and scaling
+   - Perform feature engineering and selection
+
+3. **Modeling** (`notebooks/03_modeling.ipynb`):
+   - Train and evaluate multiple models
+   - Compare performance metrics
+   - Analyze model errors and generate insights
+
+### Training Individual Models
+
+```python
+from src.data_processing import NumpyDataProcessor
+from src.models import LogisticRegression, ModelConfig, compute_metrics, train_test_split
+
+# Load and preprocess data
+processor = NumpyDataProcessor()
+X, y = processor.load_data("data/raw/creditcard.csv")
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# Configure and train model
+config = ModelConfig(learning_rate=0.001, max_epochs=500, batch_size=256)
+model = LogisticRegression(config=config, class_weight="balanced")
+model.fit(X_train, y_train)
+
+# Evaluate
+y_pred = (model.predict(X_test) > 0.5).astype(int)
+metrics = compute_metrics(y_test, y_pred)
+print(f"Accuracy: {metrics['accuracy']:.4f}, F1: {metrics['f1_score']:.4f}")
+```
+
+### Generating Visualizations
+
+```python
+from src.visualization import AdvancedVisualizer
+
+visualizer = AdvancedVisualizer()
+fig = visualizer.create_eda_dashboard(X, y)
+fig.savefig('eda_dashboard.png', dpi=300, bbox_inches='tight')
+```
+
+## Results
+
+Model performance and parameters are saved in `data/processed/`:
+
+- `logistic_regression_params.npy`: Trained weights and biases
+- `neural_network_params.npy`: Network parameters and configuration
+- `knn_params.npy`: KNN model parameters
+- `modeling_results.npy`: Comprehensive evaluation metrics
+- `eda_dashboard.png`: Exploratory data analysis visualizations
+
+**Key Findings**:
+- Neural networks typically achieve the highest performance on this task
+- Proper handling of class imbalance is crucial for fraud detection
+- Feature engineering significantly impacts model performance
+
+## Project Structure
+
+```
+.
+├── data/
+│   ├── raw/
+│   │   └── creditcard.csv          # Raw dataset
+│   └── processed/                   # Processed data and results
+│       ├── *.npy                    # Model parameters and results
+│       ├── *.pkl                    # Preprocessed data
+│       └── *.png                    # Generated visualizations
+├── notebooks/
+│   ├── 01_data_exploration.ipynb    # Data analysis and EDA
+│   ├── 02_preprocessing.ipynb       # Data preprocessing pipeline
+│   └── 03_modeling.ipynb           # Model training and evaluation
+├── src/
+│   ├── __init__.py
+│   ├── data_processing.py           # Data loading and preprocessing
+│   ├── models.py                    # ML model implementations
+│   └── visualization.py             # Plotting and visualization tools
+├── requirements.txt                 # Python dependencies
+└── README.md                        # Project documentation
+```
+
+## Challenges & Solutions
+
+### Memory Efficiency
+- **Challenge**: Large datasets require careful memory management.
+- **Solution**: Implemented batch processing, optimized data types, and streaming operations.
+
+### Numerical Stability
+- **Challenge**: Gradient computations can become unstable with poor initialization.
+- **Solution**: Xavier initialization, gradient clipping, and numerically stable implementations.
+
+### Class Imbalance
+- **Challenge**: Fraudulent transactions are extremely rare (0.172%).
+- **Solution**: SMOTE oversampling, class weighting, and appropriate evaluation metrics.
+
+### Scalability
+- **Challenge**: Pure NumPy implementations may be slower than optimized libraries.
+- **Solution**: Vectorized operations, efficient algorithms, and parallel processing where possible.
+
+## Future Improvements
+
+- **Performance Optimization**: Implement GPU acceleration with CuPy or JAX.
+- **Advanced Models**: Add ensemble methods, tree-based models, and deep learning architectures.
+- **Production Deployment**: Containerization with Docker and model serving APIs.
+- **Automated ML**: Hyperparameter optimization and automated feature selection.
+- **Real-time Processing**: Streaming data processing and online learning capabilities.
+
+## Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Development Guidelines
+
+- Follow PEP 8 style guidelines
+- Add docstrings and type hints to all functions
+- Write unit tests for new functionality
+- Update documentation for any new features
+- Ensure all code works with the existing test suite
+
+## Authors
+
+- **Lang Phu Quy** - *Initial work and implementation*
+
+## Contact
+
+For questions, suggestions, or collaboration:
+
+- **Email**: phuquy.lang@gmail.com
+- **GitHub Issues**: [issues](https://github.com/b28dbca4/Numpy-for-Data-Science/issues)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](https://opendatacommons.org/licenses/dbcl/1-0/) file for details.
+
+---
+
+<div align="center">
+
+⭐ **If you find this project helpful, please give it a star!** ⭐
+
+*Built with ❤️ using pure NumPy*
+
+</div>
