@@ -1,5 +1,19 @@
-numpy
-matplotlib
-seaborn
-scikit-learn
-joblib 
+# Core Dependencies
+numpy>=1.26.0
+scipy>=1.11.0
+
+# Data Processing & Machine Learning
+scikit-learn>=1.3.1
+joblib>=1.3.2
+
+# Visualization
+matplotlib>=3.8.0
+seaborn>=0.13.0
+
+# Jupyter Notebook Support
+jupyter>=1.0.0
+ipykernel>=6.25.0
+notebook>=7.0.0
+
+# Utilities
+tqdm>=4.66.0
