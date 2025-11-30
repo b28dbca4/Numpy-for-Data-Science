@@ -249,55 +249,27 @@ class NumpyDataProcessor:
             return "Left-skewed"
         
     def perform_ttest(self, X: npt.NDArray, y: npt.NDArray) -> Tuple[npt.NDArray, npt.NDArray]:
-        """
-        Thực hiện Welch's t-test để so sánh sự khác biệt trung bình giữa hai lớp.
-        H0: Không có sự khác biệt đáng kể về trung bình của đặc trưng giữa 2 lớp.
-        H1: Có sự khác biệt đáng kể.
-        
-        Parameters:
-        -----------
-        X : ndarray
-            Ma trận đặc trưng
-        y : ndarray
-            Vector nhãn (0 và 1)
-            
-        Returns:
-        --------
-        t_stats : ndarray
-            Giá trị t-statistic cho mỗi feature.
-        significant_features : ndarray
-            Chỉ số (index) của các features có ý nghĩa thống kê (abs(t) > 1.96).
-        """
         print("Performing Welch's t-test analysis...")
         
-        # Tách dữ liệu theo lớp
         X_class0 = X[y == 0]
         X_class1 = X[y == 1]
         
-        # Tính các thống kê cần thiết
         n0 = X_class0.shape[0]
         n1 = X_class1.shape[0]
         
-        # Tính mean và variance cho từng feature (axis=0)
         mean0 = np.mean(X_class0, axis=0)
         mean1 = np.mean(X_class1, axis=0)
         
-        # ddof=1 để tính phương sai mẫu (sample variance)
         var0 = np.var(X_class0, axis=0, ddof=1)
         var1 = np.var(X_class1, axis=0, ddof=1)
         
-        # Tránh chia cho 0
         epsilon = 1e-10
         
-        # Công thức Welch's t-statistic
-        # t = (mean1 - mean0) / sqrt(var1/n1 + var0/n0)
         numerator = mean1 - mean0
         denominator = np.sqrt((var1 / n1) + (var0 / n0) + epsilon)
         
         t_stats = numerator / denominator
         
-        # Xác định các feature quan trọng
-        # Ngưỡng 1.96 tương ứng với p-value < 0.05 (độ tin cậy 95%) cho phân phối chuẩn
         significant_mask = np.abs(t_stats) > 1.96
         significant_features = np.where(significant_mask)[0]
         
@@ -659,7 +631,13 @@ class AdvancedPreprocessor:
                 scaled_data = self._yeo_johnson_transform(feature_data)
                 
             X_scaled[:, feature_idx] = scaled_data
-            
+        
+        # Apply clipping to prevent extreme values that can cause gradient explosion
+        # Clip to [-10, 10] range: in standard normal distribution, 99.7% data lies within [-3, 3]
+        # A value of 10 is sufficiently distant for models to interpret as "very large/small"
+        # without risking numerical instability during optimization
+        X_scaled = np.clip(X_scaled, -10, 10)
+        
         return X_scaled
     
     def _yeo_johnson_transform(self, data: npt.NDArray) -> npt.NDArray:
@@ -787,11 +765,26 @@ class AdvancedPreprocessor:
     
     def advanced_feature_engineering(self, X: npt.NDArray) -> npt.NDArray:
         """
-        Advanced feature engineering with polynomial features and interactions
+        Advanced feature engineering with polynomial features, interactions, and cyclical encoding
         """
         print("Performing advanced feature engineering...")
         
         engineered_features = [X]
+        
+        # Cyclical encoding for Time variable (assuming first column is Time in seconds)
+        # Time ranges from 0 to 172792 seconds (48 hours)
+        # Apply trigonometric transformation for cyclical nature
+        time_feature = X[:, 0]  # Assuming Time is the first column
+        seconds_in_day = 24 * 3600  # 86400 seconds
+        
+        # Create sin and cos features to capture cyclical patterns
+        time_sin = np.sin(2 * np.pi * time_feature / seconds_in_day)
+        time_cos = np.cos(2 * np.pi * time_feature / seconds_in_day)
+        
+        # Add cyclical time features
+        cyclical_features = np.column_stack([time_sin, time_cos])
+        engineered_features.append(cyclical_features)
+        print(f"  Added 2 cyclical time features (Time_sin, Time_cos)")
         
         if self.config.create_polynomial:
             poly_features = self._create_polynomial_features(X, degree=self.config.polynomial_degree)
